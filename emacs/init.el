@@ -11,13 +11,6 @@
 ;; I like it better at the bottom, but perhaps that's just my experience from doom? We can revisit later
 (tooltip-mode -1)
 
-;; Without this, you need Ctrl-G or something to kill any particular command.
-;; Fuxk that, that's what my ESC key is for
-;; the `kbd` function converts a human-readable keycode thing to whatever emacs needs
-;; global-set-key is for *everything*, while define-key is for specific keymaps used by specific modes
-;; FIXME: Find out more about keymaps and modes and how they relate
-;; FIXME: But generally use general.el instead?
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;; Set up our font.
 ;; TODO: Find out what the fuck unit this is. And what does the 'default nil mean?
@@ -134,7 +127,6 @@
 ;; From https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-
 ;; EVIL MODE HERE WE FUCKING COME BITCHES!
 
 (use-package evil
@@ -156,9 +148,16 @@
   ;; Tell it we wanna use it with evil
   (general-evil-setup t)
 
-  ;; Define a custom function that can be used to define our custom functions
+  ;; Set <escape> to mean the same as C-g in *most* places
+  ;; This doesn't account for magit though, that is handled in the magit block
+  (general-define-key
+   "<escape>" 'keyboard-escape-quit
+   )
+
+  ;; Define a custom function that can be used to define our custom keymaps
   (general-create-definer yuvi/leader-keys
-    :keymaps '(normal insert visual emacs)
+    :states '(normal visual emacs)
+    :keymaps 'override
     :prefix "SPC"
     :global-prefix "C-SPC"
     )
@@ -175,16 +174,55 @@
    "wv" '(split-window-vertically :which-key "vertical-split")
    "wh" '(split-window-horizontally :which-key "horizontal-split")
    "wd" '(delete-window :which-key "close")
+   "wn" '(evil-window-next :which-key "next")
+   "wp" '(evil-window-prev :which-key "previous")
    )
   )
 
 ;; Sets up evil keybindings for a lot of modes, like helpful
 (use-package evil-collection
   :after evil
-  :config
+  :init
   (evil-collection-init)
   )
 
+
+;; Project support
+(use-package projectile
+  :init
+  (projectile-mode 1)
+  :config
+  ;; SET PATH WHERE PROJECTS ARE! 
+  (setq projectile-project-search-path '("~/code/"))
+  ;; Enable caching to make things not super slow
+  (setq projectile-enable-caching t)
+  (yuvi/leader-keys
+   ;; TOP LEVEL KEYBINDINGS FUCK YES!!!!!! OMG
+    "p" '(:ignore t :which-key "project")
+    "pp" '(projectile-switch-project :which-key "switch project")
+    "pf" '(projectile-find-file-in-known-projects :which-key "find file in all projects")
+    "pi" '(projectile-invalidate-cache :which-key "invalidate cache")
+    "pd" '(projectile-discover-projects-in-search-path :which-key "discover projects")
+
+    "," '(projectile-find-file :which-key "find file in project")
+    )
+  )
+
+
+;; MAGIT!
+(use-package magit
+  :config
+  (yuvi/leader-keys
+    ;; Unlike doomm, let's just stick to one g here
+    ;; I don't think I've ever literally used any of the other commands there?
+    "g" '(magit-status :which-key "git status")
+    )
+  ;; Make sure that <ESC> quits magit transient things (like ?)
+  ;; From https://github.com/emacs-evil/evil-magit/issues/14#issuecomment-626583736
+  (general-define-key
+   :keymaps 'transient-base-map
+   "<escape>" 'transient-quit-one)
+  )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -193,7 +231,7 @@
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
