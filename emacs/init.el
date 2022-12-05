@@ -75,6 +75,12 @@
 ;; FIXME: Find out how to automatically install these if needed?
 (use-package all-the-icons)
 
+;; Auto-save
+;; FIXME: What does *this* actually mean?
+(setq auto-save-default t)
+; Auto-save *everything* whenever we lose focus
+(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+
 ;; Enable line numbers!
 (global-display-line-numbers-mode t)
 ;; Display colum numbers too
@@ -243,6 +249,31 @@
 ;; Setup language modes as we come across their needs
 (use-package yaml-mode)
 
+;; Python setups
+(use-package pyvenv
+  :config
+  
+    ;; Automatic environment activation
+    ;;
+    ;; Our venvs are stored under ~/.virtualenvs, with the name of the project used for
+    ;; the name of the venv. We figure out the correct one and activate it each time we
+    ;; switch into a python mode
+    ;; Stolen from https://ddavis.io/posts/emacs-python-lsp/
+    (defun py-workon-project-venv ()
+    "Call pyenv-workon with the current projectile project name.
+    This will return the full path of the associated virtual
+    environment found in $WORKON_HOME, or nil if the environment does
+    not exist."
+    (let ((pname (projectile-project-name)))
+	(pyvenv-workon pname)
+	(if (file-directory-p pyvenv-virtual-env)
+	    pyvenv-virtual-env
+	(pyvenv-deactivate))))
+
+    ;; Set appropriate python virtual env each time we do any window changes
+    (add-hook 'window-configuration-change-hook 'py-workon-project-venv)
+)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -251,7 +282,7 @@
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(pyvenv vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
