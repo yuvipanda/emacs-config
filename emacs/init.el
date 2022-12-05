@@ -176,6 +176,7 @@
    "wd" '(delete-window :which-key "close")
    "wn" '(evil-window-next :which-key "next")
    "wp" '(evil-window-prev :which-key "previous")
+   ;; TODO: Maximize current window
    )
   )
 
@@ -204,6 +205,7 @@
     "pi" '(projectile-invalidate-cache :which-key "invalidate cache")
     "pd" '(projectile-discover-projects-in-search-path :which-key "discover projects")
 
+    ;; This is so frequently used, it is top level
     "," '(projectile-find-file :which-key "find file in project")
     )
   )
@@ -223,6 +225,10 @@
    :keymaps 'transient-base-map
    "<escape>" 'transient-quit-one)
   )
+
+;; Setup forge to work with GitHub
+(use-package forge
+  :after magit)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -231,7 +237,7 @@
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
