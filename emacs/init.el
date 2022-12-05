@@ -229,6 +229,20 @@
 ;; Setup forge to work with GitHub
 (use-package forge
   :after magit)
+
+
+;; Setup our terminal things
+(use-package vterm
+  :config
+  (yuvi/leader-keys
+    ;; I don't think I use other aspects of 't' in doom so much
+    "t" '(projectile-run-vterm :which-key "project terminal")
+    )
+)
+
+;; Setup language modes as we come across their needs
+(use-package yaml-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -237,7 +251,7 @@
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
