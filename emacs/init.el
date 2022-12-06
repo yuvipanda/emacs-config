@@ -282,6 +282,39 @@ not exist."
   (add-hook 'window-configuration-change-hook 'py-workon-project-venv)
 )
 
+;; IntelliSense type code completion
+(use-package company
+  :config
+  (company-mode 1)
+  )
+
+;; This makes company definitely look better
+(use-package company-box
+  :after company
+  :hook (company-mode . company-box-mode)
+  )
+
+(use-package lsp-mode
+  :after company
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "s-l")
+  :config
+  (lsp-enable-which-key-integration t)
+  (yuvi/leader-keys
+    "l" '(:ignore t :which-key "lsp")
+    "lf" '(lsp-format-buffer :which-key "format buffer")
+    ;; I like the lsp-find versions rather than the 'peek' versions
+    "ld" '(lsp-find-definition :which-key "find definition")
+    "lr" '(lsp-find-references :which-key "find references")
+    )
+  )
+
+;; FIXME: This doesn't really work yet :(
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -290,7 +323,7 @@ not exist."
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(counsel-projectile rg ripgrep terraform-mode pyvenv vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(company-box lsp-ivy company lsp-ui lsp-mode counsel-projectile rg ripgrep terraform-mode pyvenv vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
