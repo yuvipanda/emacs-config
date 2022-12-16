@@ -11,7 +11,9 @@
 ;; I like it better at the bottom, but perhaps that's just my experience from doom? We can revisit later
 (tooltip-mode -1)
 
+(setq make-backup-files nil) ; stop creating ~ files
 
+(setq-default indent-tabs-mode nil) ; Just never make tabs
 ;; Set up our font.
 ;; TODO: Find out what the fuck unit this is. And what does the 'default nil mean?
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 180)
@@ -133,6 +135,8 @@
 ;; From https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;; Default comment-dwim sucks
+(use-package evil-nerd-commenter)
 ;; EVIL MODE HERE WE FUCKING COME BITCHES!
 
 (use-package evil
@@ -158,6 +162,7 @@
   ;; This doesn't account for magit though, that is handled in the magit block
   (general-define-key
    "<escape>" 'keyboard-escape-quit
+   "s-/" 'evilnc-comment-or-uncomment-lines
    )
 
   ;; Define a custom function that can be used to define our custom keymaps
@@ -255,6 +260,7 @@
 ;; Setup language modes as we come across their needs
 (use-package yaml-mode)
 (use-package terraform-mode)
+(use-package jsonnet-mode)
 
 
 ;; Automatic environment activation
@@ -306,7 +312,10 @@ not exist."
     "lf" '(lsp-format-buffer :which-key "format buffer")
     ;; I like the lsp-find versions rather than the 'peek' versions
     "ld" '(lsp-find-definition :which-key "find definition")
-    "lr" '(lsp-find-references :which-key "find references")
+    ;; This is le, because I think I use rename mroe
+    "le" '(lsp-find-references :which-key "find references")
+    ;; This gets r over find-references because I'll use it more
+    "lr" '(lsp-rename :which-key "rename symbol")
     )
   )
 
@@ -323,7 +332,7 @@ not exist."
  '(custom-safe-themes
    '("683b3fe1689da78a4e64d3ddfce90f2c19eb2d8ab1bab1738a63d8263119c3f4" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(package-selected-packages
-   '(company-box lsp-ivy company lsp-ui lsp-mode counsel-projectile rg ripgrep terraform-mode pyvenv vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
+   '(evil-nerd-commenter comment-dwim-2 jsonnet-mode company-box lsp-ivy company lsp-ui lsp-mode counsel-projectile rg ripgrep terraform-mode pyvenv vterm yaml-mode forge magit projectile evil-collection counsel which-key use-package rainbow-delimiters ivy-rich doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
