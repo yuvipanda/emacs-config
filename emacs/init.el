@@ -317,6 +317,9 @@ not exist."
     ;; This gets r over find-references because I'll use it more
     "lr" '(lsp-rename :which-key "rename symbol")
     )
+
+  ;; Setup appropriate virutlanev before starting lsp
+  (add-hook 'python-mode-hook (lambda () (py-workon-project-venv) (lsp)))
   )
 
 ;; FIXME: This doesn't really work yet :(
